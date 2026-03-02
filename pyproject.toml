@@ -1,0 +1,7 @@
+[project]
+name = "market-analysis-engine"
+version = "0.1.0"
+description = "Headless market data ingestion and analytics engine."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
