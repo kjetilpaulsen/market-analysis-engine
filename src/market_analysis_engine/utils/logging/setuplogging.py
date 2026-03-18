@@ -28,8 +28,6 @@ def _configure_logging(appname: str,
                   log: CFGLogging) -> None:
     """
     Configures the logging for the entire application
-
-    Sets the path for all future logs to logs/trilobite.log
     """
     logger = logging.getLogger(__name__)
     logger.info("Configuring logging ..")

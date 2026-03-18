@@ -4,3 +4,5 @@ from dataclasses import dataclass, field
 class FrontendCommandInput:
     name: str
     options: dict[str, object] = field(default_factory=dict)
+
+

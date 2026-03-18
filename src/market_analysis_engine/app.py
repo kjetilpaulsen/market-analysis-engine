@@ -3,10 +3,37 @@ from collections.abc import Iterator, Sequence, Callable
 import logging
 
 # FIX: change project name for imports
-from market_analysis_engine.commands.commands import Command, CmdDisplayVersion
+from market_analysis_engine.commands.commands import CmdUpdateAll, Command, CmdDisplayVersion
 from market_analysis_engine.events.events import Event
 from market_analysis_engine.handlers.displayversionhandler import DisplayVersionHandler
-from market_analysis_engine.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
+from market_analysis_engine.handlers.updateallhandler import UpdateAllHandler
+from market_analysis_engine.marketdata.yfclient import YFClient
+from market_analysis_engine.runtime.runtime import AppPaths, CFGDataBase, CFGDev, CFGTickerService, MetaInfo
+
+# from market_analysis_engine.cli.runtimeflags import CliFlags
+# from market_analysis_engine.ui.cli.clicontroller import CLIController
+# from market_analysis_engine.config.config import AppConfig, CFGTickerService, CFGDataBase
+from market_analysis_engine.db.connect import connect
+from market_analysis_engine.db.repo import MarketRepo
+from market_analysis_engine.db.schema import create_schema
+from market_analysis_engine.marketdata.yfclient import YFClient
+# from market_analysis_engine.handlers.uihandlers import Handler
+from market_analysis_engine.marketdata.marketservice import MarketService
+from market_analysis_engine.tickers.tickerclient import TickerClient
+from market_analysis_engine.tickers.tickerservice import Ticker, TickerService
+# from market_analysis_engine.commands.uicommands import (
+#     CmdNotAnOption, 
+#     CmdQuit, 
+#     CmdUpdateAll,
+#     Command, 
+# )
+# from market_analysis_engine.events.uievents import (
+#     EvtExit,
+#     EvtStartUp,
+#     EvtStatus, 
+#     EvtProgress,
+#     Event, 
+# )
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +58,7 @@ class App:
         db: Database configuration.
         paths: Resolved application filesystem paths.
     """
-    def __init__(self, meta: MetaInfo, dev: CFGDev, db: CFGDataBase, paths: AppPaths) -> None:
+    def __init__(self, meta: MetaInfo, dev: CFGDev, db: CFGDataBase, paths: AppPaths, cfg_ts: CFGTickerService) -> None:
         """
         Initialize the application runtime.
 
@@ -51,13 +78,27 @@ class App:
         self.dev = dev
         self.db = db
         self.paths = paths
+        self.cfg_ts = cfg_ts
+
+        # DB wiring
+        self._conn = connect(self.db)
+        logger.info("DB connection created")
+        create_schema(self._conn)
+        repo = MarketRepo(self._conn)
+
+        # Market wiring
+        yfclient = YFClient()
+        mkt = MarketService(client=yfclient)
+
+        # Ticker wiring
+        tickerclient = TickerClient()
+        ts = TickerService(repo=repo, tickerclient=tickerclient, cfg_ts=self.cfg_ts, cfg_dev= self.dev)
 
         # Create handlers
         self._handlers: dict[type[Command], Callable] = {
             CmdDisplayVersion: lambda cmd: DisplayVersionHandler(cmd, self.meta).handle(),
+            CmdUpdateAll: lambda cmd: UpdateAllHandler(cmd, repo, ts, mkt, self.cfg_ts).handle(),
         }
-
-        # Start services..
 
     def run(self, cmds: Sequence[Command]) -> Iterator[Event]:
         """

@@ -125,7 +125,7 @@ def test_build_runtime_uses_defaults_and_calls_path_helpers(
     assert runtime.log.stderr_log is True
 
     assert runtime.db.db_host == "/run/postgresql"
-    assert runtime.db.db_dbname == "market_analysis_engine"
+    assert runtime.db.db_name == "market_analysis_engine"
     assert runtime.db.db_user is None
     assert runtime.db.db_password is None
     assert runtime.db.db_port == 5432
@@ -234,7 +234,7 @@ def test_build_runtime_applies_overrides_and_builds_config(
     assert runtime.log.stderr_log is False
 
     assert runtime.db.db_host == "db.internal"
-    assert runtime.db.db_dbname == "custom_db"
+    assert runtime.db.db_name == "custom_db"
     assert runtime.db.db_user == "alice"
     assert runtime.db.db_password == "secret"
     assert runtime.db.db_port == 5544

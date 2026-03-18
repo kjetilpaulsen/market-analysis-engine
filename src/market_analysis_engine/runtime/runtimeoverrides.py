@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import date
 
 @dataclass(frozen=True)
 class RuntimeOverrides:
@@ -16,3 +17,5 @@ class RuntimeOverrides:
     db_user: str | None = None
     db_password: str | None = None
     db_port: int | None = None
+    default_date: date | None = None
+    default_timedelta: int | None = None

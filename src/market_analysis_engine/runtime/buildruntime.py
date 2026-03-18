@@ -12,6 +12,7 @@ from market_analysis_engine.runtime.runtime import (
     CFGDev,
     CFGLogging,
     CFGMisc,
+    CFGTickerService,
     Runtime,
 )
 from market_analysis_engine.runtime.runtimesettings import RuntimeSettings
@@ -82,13 +83,17 @@ def build_runtime(rto: RuntimeOverrides | None = None) -> Runtime:
 
     db = CFGDataBase(
         db_host = settings.db_host or "/run/postgresql",
-        db_dbname = settings.db_name or meta.app_name.replace("-","_"),
+        db_name = settings.db_name or meta.app_name.replace("-","_"),
         db_user = settings.db_user,
         db_password = settings.db_password,
         db_port = settings.db_port or 5432,
     )
     misc=CFGMisc(
         build_config = settings.build_config,
+    )
+    ticker=CFGTickerService(
+        default_date= settings.default_date,
+        default_timedelta=settings.default_timedelta,
     )
 
     return Runtime(
@@ -98,4 +103,5 @@ def build_runtime(rto: RuntimeOverrides | None = None) -> Runtime:
         log=log,
         db=db,
         misc=misc,
+        ticker=ticker,
     )

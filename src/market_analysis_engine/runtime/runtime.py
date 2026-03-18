@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+from datetime import date
 
 # Immutables
 @dataclass(frozen=True)
@@ -41,14 +42,23 @@ class CFGLogging:
 @dataclass(frozen=True)
 class CFGDataBase:
     db_host: str | None = None
-    db_dbname: str | None = None
+    db_name: str | None = None
     db_user: str | None = None
     db_password: str | None = None
     db_port: int | None = None
 
 @dataclass(frozen=True)
+class CFGTickerService:
+    """
+    Stores config settings for TickerService
+    """
+    default_date: date = date(1975,1,1)
+    default_timedelta: int = 1
+
+@dataclass(frozen=True)
 class CFGMisc:
     build_config: bool | None = None
+
 
 # Consolidation
 @dataclass(frozen=True)
@@ -59,3 +69,23 @@ class Runtime:
     log: CFGLogging
     db: CFGDataBase
     misc: CFGMisc
+    ticker: CFGTickerService
+
+#######
+
+# FIX: build this into the command instead
+@dataclass(frozen=True)
+class CFGAnalysis:
+    top_n: int = 20
+    n_factors: int = 20
+    #Using period instead
+    #min_days: int = 1260
+    lookback: int = 60
+    horizon: int = 1
+    epochs: int = 10
+    period: str = "3y"
+    ticker: str = "AAPL"
+
+
+
+

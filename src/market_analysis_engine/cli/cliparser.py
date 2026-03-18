@@ -68,12 +68,22 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
     parser.add_argument("--db-password", default=None)
     parser.add_argument("--db-port", type=int, default=None)
 
+    parser.add_argument("--default_date", type=str, default=None, help="Default start date to get data")
+    parser.add_argument("--default_timedelta", type=int, default=1, help="Default start date to get data")
+
+
     # Subparsers
     subparses = parser.add_subparsers(dest="command")
 
     # Version
     version_parser = subparses.add_parser("version", help="Display the current version")
     version_parser.add_argument("--uppercase", action="store_true", default=False, help="Displays the version in uppercase letters")
+
+    # Updateall
+    updateall_parser = subparses.add_parser("updateall", help="Updates all tickers, dev mode reduces to small selection")
+    updateall_parser.add_argument("--stagger-requests", action="store_true", default=False, help="Waits a random amount of time between requests")
+    updateall_parser.add_argument("--stagger-start", type=float, default=0.1, help="Minimum wait time if staggerting")
+    updateall_parser.add_argument("--stagger-amount", type=float, default=0.1, help="The max amount of stagger")
 
     # Parse them
 
@@ -94,6 +104,8 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
         db_user=args.db_user,
         db_password=args.db_password,
         db_port=args.db_port,
+        default_date=args.default_date,
+        default_timedelta=args.default_timedelta,
     )
 
     commands: list[FrontendCommandInput] = []
@@ -103,6 +115,17 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
                 name="version",
                 options={
                     "uppercase": args.uppercase,
+                },
+            )
+        )
+    if args.command == "updateall":
+        commands.append(
+            FrontendCommandInput(
+                name="updateall",
+                options={
+                    "stagger_requests": args.stagger_requests,
+                    "stagger_start": args.stagger_start,
+                    "stagger_amount": args.stagger_amount,
                 },
             )
         )

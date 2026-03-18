@@ -54,7 +54,7 @@ def cli(argv: list[str] | None = None) -> int:
                       runtime.log)
         log_runtime(runtime)
 
-        app = App(runtime.meta, runtime.dev, runtime.db, runtime.paths)
+        app = App(runtime.meta, runtime.dev, runtime.db, runtime.paths, runtime.ticker)
         evt_handler = CliEventHandler()
 
         for evt in app.run(commands):

@@ -3,7 +3,7 @@ import logging
 from typing import Callable
 
 # FIX: change project name for imports
-from market_analysis_engine.commands.commands import Command, CmdDisplayVersion
+from market_analysis_engine.commands.commands import CmdUpdateAll, Command, CmdDisplayVersion
 from market_analysis_engine.commands.frontendcommandinput import FrontendCommandInput
 
 logger = logging.getLogger(__name__)
@@ -40,6 +40,11 @@ def build_commands(cmd_inputs: tuple[FrontendCommandInput, ...]) -> tuple[Comman
     command_builders: dict[str, Callable[[dict[str, object]], Command]] = {
         "version": lambda opts: CmdDisplayVersion(
             uppercase=bool(opts.get("uppercase", False))
+        ),
+        "updateall": lambda opts: CmdUpdateAll(
+            stagger_requests=bool(opts.get("stagger_requests", False)),
+            stagger_start=bool(opts.get("stagger_start", False)),
+            stagger_amount=bool(opts.get("stagger_amount", False)),
         ),
     }
     commands: list[Command] = []

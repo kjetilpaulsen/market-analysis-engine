@@ -42,7 +42,7 @@ def _make_runtime(tmp_path: Path) -> Runtime:
         ),
         db=CFGDataBase(
             db_host="db.internal",
-            db_dbname="appdb",
+            db_name="appdb",
             db_user="alice",
             db_password="super-secret",
             db_port=5432,

@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 import pathlib
 from typing import Any
@@ -52,13 +53,16 @@ class RuntimeSettings(BaseSettings):
     console_log: bool = False
     stderr_log: bool = True
     #CFGDataBase
-    db_host: str | None = None
-    db_name: str | None = None
+    db_host: str | None = "/run/postgresql"
+    db_name: str | None = "market_analysis_engine"
     db_user: str | None = None
     db_password: str | None = None
-    db_port: int | None = None
+    db_port: int | None = 5432
     #CFGMisc
     build_config: bool | None = None
+    #CFGTickerservice
+    default_date: date | None = date(1975,1,1)
+    default_timedelta: int | None = 1
 
     @staticmethod
     def resolve_env_file() -> str | None:

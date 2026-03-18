@@ -43,4 +43,8 @@ def log_runtime(runtime: Runtime) -> None:
     logger.info("Log to file: %s", runtime.log.file_log)
     logger.info("Log to console: %s", runtime.log.console_log)
     logger.info("Log to stderr: %s", runtime.log.stderr_log)
+    logger.info("db_host: %s", runtime.db.db_host)
+    logger.info("db_name: %s", runtime.db.db_name)
+    logger.info("db_user: %s", runtime.db.db_user)
+    logger.info("db_password: %s", runtime.db.db_password if runtime.db.db_password is None else "REDACTED")
 
