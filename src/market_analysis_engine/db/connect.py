@@ -4,10 +4,8 @@ import logging
 import os
 
 from market_analysis_engine.runtime.runtime import CFGDataBase
-# from psycopg imort Connection
-# from psycopg.sql import Identifier, SQL
 import psycopg
-import psycopg.sql
+# import psycopg.sql
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +32,7 @@ def connect(settings: CFGDataBase | None = None) -> psycopg.Connection:
 
     logger.debug("End ..")
 
-    _ensure_db_exists(s)
+    # _ensure_db_exists(s)
     return psycopg.connect(
         dbname=s.db_name,
         host=s.db_host,
@@ -44,25 +42,25 @@ def connect(settings: CFGDataBase | None = None) -> psycopg.Connection:
         autocommit=False,
     )
 
-def _ensure_db_exists(s: CFGDataBase) -> None:
-    with psycopg.connect(
-        dbname="postgres",
-        host="/run/postgresql",
-        port=5432,
-        user=None,
-        password=None,
-        autocommit=True) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT 1 FROM pg_database WHERE datname = %s",
-                (s.db_name,),
-            )
-            exists = cur.fetchone() is not None
-
-            if exists:
-                return
-            cur.execute(
-                psycopg.sql.SQL("CREATE DATABASE {}").format(psycopg.sql.Identifier(s.db_name))
-            )
-
-
+# def _ensure_db_exists(s: CFGDataBase) -> None:
+#     with psycopg.connect(
+#         dbname="postgres",
+#         host="/run/postgresql",
+#         port=5432,
+#         user=None,
+#         password=None,
+#         autocommit=True) as conn:
+#         with conn.cursor() as cur:
+#             cur.execute(
+#                 "SELECT 1 FROM pg_database WHERE datname = %s",
+#                 (s.db_name,),
+#             )
+#             exists = cur.fetchone() is not None
+#
+#             if exists:
+#                 return
+#             cur.execute(
+#                 psycopg.sql.SQL("CREATE DATABASE {} TEMPLATE template0").format(psycopg.sql.Identifier(s.db_name))
+#             )
+#
+#
