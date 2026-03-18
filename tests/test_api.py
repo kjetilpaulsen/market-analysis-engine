@@ -21,6 +21,7 @@ from market_analysis_engine.runtime.runtime import (
     CFGDev,
     CFGLogging,
     CFGMisc,
+    CFGTickerService,
     MetaInfo,
     Runtime,
 )
@@ -45,6 +46,7 @@ def _make_runtime(tmp_path: Path) -> Runtime:
         log=CFGLogging(),
         db=CFGDataBase(),
         misc=CFGMisc(build_config=False),
+        ticker=CFGTickerService(),
     )
 
 
@@ -128,11 +130,12 @@ def test_run_endpoint_returns_events(monkeypatch: pytest.MonkeyPatch, tmp_path: 
         return ("built-command",)
 
     class FakeApp:
-        def __init__(self, meta, dev, db, paths) -> None:
+        def __init__(self, meta, dev, db, paths, ticker) -> None:
             assert meta == runtime.meta
             assert dev == runtime.dev
             assert db == runtime.db
             assert paths == runtime.paths
+            assert ticker == runtime.ticker
 
         def run(self, commands):
             assert commands == ("built-command",)

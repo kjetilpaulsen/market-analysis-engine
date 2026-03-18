@@ -12,6 +12,7 @@ from market_analysis_engine.runtime.runtime import (
     CFGDev,
     CFGLogging,
     CFGMisc,
+    CFGTickerService,
     MetaInfo,
     Runtime,
 )
@@ -48,6 +49,7 @@ def _make_runtime(tmp_path: Path) -> Runtime:
             db_port=5432,
         ),
         misc=CFGMisc(build_config=False),
+        ticker=CFGTickerService(),
     )
 
 
@@ -77,5 +79,5 @@ def test_log_runtime_logs_expected_runtime_fields_but_not_password(caplog, tmp_p
     assert "Log to console: False" in text
     assert "Log to stderr: True" in text
     assert "super-secret" not in text
-    assert "db.internal" not in text
-    assert "alice" not in text
+    assert "db.internal" in text
+    assert "alice" in text

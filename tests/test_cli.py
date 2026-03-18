@@ -11,6 +11,7 @@ from market_analysis_engine.runtime.runtime import (
     CFGDev,
     CFGLogging,
     CFGMisc,
+    CFGTickerService,
     MetaInfo,
     Runtime,
 )
@@ -36,6 +37,7 @@ def _make_runtime(tmp_path: Path) -> Runtime:
         log=CFGLogging(),
         db=CFGDataBase(),
         misc=CFGMisc(build_config=False),
+        ticker=CFGTickerService(),
     )
 
 
@@ -71,8 +73,8 @@ def test_cli_success_path(monkeypatch, tmp_path: Path):
         calls["log_runtime"] = received_runtime
 
     class FakeApp:
-        def __init__(self, meta, dev, db, paths) -> None:
-            calls["app_init"] = (meta, dev, db, paths)
+        def __init__(self, meta, dev, db, paths, ticker) -> None:
+            calls["app_init"] = (meta, dev, db, paths, ticker)
 
         def run(self, commands):
             calls["app_run"] = commands
@@ -115,7 +117,7 @@ def test_cli_success_path(monkeypatch, tmp_path: Path):
         runtime.log,
     )
     assert calls["log_runtime"] == runtime
-    assert calls["app_init"] == (runtime.meta, runtime.dev, runtime.db, runtime.paths)
+    assert calls["app_init"] == (runtime.meta, runtime.dev, runtime.db, runtime.paths, runtime.ticker)
     assert calls["handled_events"] == [
         EvtLog(message="starting"),
         EvtResult(command_name="DisplayVersion", payload={"version": "V1.2.3"}),

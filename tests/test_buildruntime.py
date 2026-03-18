@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 import logging
 from pathlib import Path
 
@@ -28,6 +29,8 @@ class FakeSettings:
         db_password: str | None,
         db_port: int | None,
         build_config: bool | None,
+        default_date: date | None,
+        default_timedelta: int | None,
     ) -> None:
         self.dev_mode = dev_mode
         self.dry_run = dry_run
@@ -43,6 +46,8 @@ class FakeSettings:
         self.db_password = db_password
         self.db_port = db_port
         self.build_config = build_config
+        self.default_date = default_date
+        self.default_timedelta = default_timedelta
 
 
 def test_build_runtime_uses_defaults_and_calls_path_helpers(
@@ -96,6 +101,8 @@ def test_build_runtime_uses_defaults_and_calls_path_helpers(
             db_password=None,
             db_port=None,
             build_config=False,
+            default_date=date(1975,1,1),
+            default_timedelta=1,
         )
 
     monkeypatch.setattr(
@@ -197,6 +204,8 @@ def test_build_runtime_applies_overrides_and_builds_config(
             db_password="secret",
             db_port=5544,
             build_config=True,
+            default_date=date(1975,1,1),
+            default_timedelta=1,
         )
 
     monkeypatch.setattr(

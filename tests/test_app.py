@@ -9,7 +9,7 @@ import pytest
 from market_analysis_engine.app import App
 from market_analysis_engine.commands.commands import CmdDisplayVersion, Command
 from market_analysis_engine.events.events import EvtResult
-from market_analysis_engine.runtime.runtime import AppPaths, CFGDataBase, CFGDev, MetaInfo
+from market_analysis_engine.runtime.runtime import AppPaths, CFGDataBase, CFGDev, CFGTickerService, MetaInfo
 
 
 def _make_app(tmp_path: Path) -> App:
@@ -20,7 +20,10 @@ def _make_app(tmp_path: Path) -> App:
             app_description="test app",
         ),
         dev=CFGDev(dev_mode=False, dry_run=False),
-        db=CFGDataBase(),
+        db=CFGDataBase(
+            db_name="market_analysis_engine",
+            db_host="/run/postgresql",
+        ),
         paths=AppPaths(
             data_dir=tmp_path / "data",
             state_dir=tmp_path / "state",
@@ -28,6 +31,7 @@ def _make_app(tmp_path: Path) -> App:
             tmp_dir=tmp_path / "cache" / "tmp",
             config_dir=tmp_path / "config",
         ),
+        cfg_ts=CFGTickerService(),
     )
 
 

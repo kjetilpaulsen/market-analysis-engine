@@ -229,7 +229,7 @@ def run_commands(req: APIRunRequest) -> APIRunResponse:
         command_inputs = _build_command_inputs(req)
         commands = build_commands(command_inputs)
 
-        app = App(_RUNTIME.meta, _RUNTIME.dev, _RUNTIME.db, _RUNTIME.paths)
+        app = App(_RUNTIME.meta, _RUNTIME.dev, _RUNTIME.db, _RUNTIME.paths, _RUNTIME.ticker)
         events = [_event_to_api(evt) for evt in app.run(commands)]
 
         return APIRunResponse(ok=True, events=events)
