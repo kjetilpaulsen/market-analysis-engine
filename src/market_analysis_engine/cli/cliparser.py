@@ -83,7 +83,13 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
     updateall_parser = subparses.add_parser("updateall", help="Updates all tickers, dev mode reduces to small selection")
     updateall_parser.add_argument("--stagger-requests", action="store_true", default=False, help="Waits a random amount of time between requests")
     updateall_parser.add_argument("--stagger-start", type=float, default=0.1, help="Minimum wait time if staggerting")
-    updateall_parser.add_argument("--stagger-amount", type=float, default=0.1, help="The max amount of stagger")
+    updateall_parser.add_argument("--stagger-amount", type=float, default=0.2, help="The max amount of stagger")
+
+    # Updateall
+    displaygraph_parser = subparses.add_parser("display-graph", help="Displays a graph of the given ticker for the given period")
+    displaygraph_parser.add_argument("--stagger-requests", action="store_true", default=False, help="Waits a random amount of time between requests")
+    displaygraph_parser.add_argument("--ticker", type=str, default="AAPL", help="The ticker to check, defaults to AAPL")
+    displaygraph_parser.add_argument("--period", type=str, default="3y", help="The period to check, y, m, w, d")
 
     # Parse them
 
@@ -126,6 +132,16 @@ def cli_parser(argv: list[str] | None = None) -> tuple[tuple[FrontendCommandInpu
                     "stagger_requests": args.stagger_requests,
                     "stagger_start": args.stagger_start,
                     "stagger_amount": args.stagger_amount,
+                },
+            )
+        )
+    if args.command == "display-graph":
+        commands.append(
+            FrontendCommandInput(
+                name="display_graph",
+                options={
+                    "ticker": args.ticker,
+                    "period": args.period,
                 },
             )
         )

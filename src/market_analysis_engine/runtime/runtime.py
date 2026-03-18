@@ -71,21 +71,3 @@ class Runtime:
     misc: CFGMisc
     ticker: CFGTickerService
 
-#######
-
-# FIX: build this into the command instead
-@dataclass(frozen=True)
-class CFGAnalysis:
-    top_n: int = 20
-    n_factors: int = 20
-    #Using period instead
-    #min_days: int = 1260
-    lookback: int = 60
-    horizon: int = 1
-    epochs: int = 10
-    period: str = "3y"
-    ticker: str = "AAPL"
-
-
-
-

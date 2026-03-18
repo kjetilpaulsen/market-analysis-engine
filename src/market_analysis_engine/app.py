@@ -3,7 +3,8 @@ from collections.abc import Iterator, Sequence, Callable
 import logging
 
 # FIX: change project name for imports
-from market_analysis_engine.commands.commands import CmdUpdateAll, Command, CmdDisplayVersion
+from market_analysis_engine.analysis.models.displaygraphhandler import DisplayGraphHandler
+from market_analysis_engine.commands.commands import CmdDisplayGraph, CmdUpdateAll, Command, CmdDisplayVersion
 from market_analysis_engine.events.events import Event
 from market_analysis_engine.handlers.displayversionhandler import DisplayVersionHandler
 from market_analysis_engine.handlers.updateallhandler import UpdateAllHandler
@@ -98,6 +99,7 @@ class App:
         self._handlers: dict[type[Command], Callable] = {
             CmdDisplayVersion: lambda cmd: DisplayVersionHandler(cmd, self.meta).handle(),
             CmdUpdateAll: lambda cmd: UpdateAllHandler(cmd, repo, ts, mkt, self.cfg_ts).handle(),
+            CmdDisplayGraph: lambda cmd: DisplayGraphHandler(cmd, repo, self.paths).handle(),
         }
 
     def run(self, cmds: Sequence[Command]) -> Iterator[Event]:
