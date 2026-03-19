@@ -60,7 +60,7 @@
 #         run: uv run pytest
 #
 
-name: ci_no_docker
+name: testing
 
 on:
   push:
