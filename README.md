@@ -130,7 +130,7 @@ Test API:
 curl http://127.0.0.1:8000/health
 ```
 
-Run command via API:
+Run command via API this will also create a lot of traffic. Take care that running through the API there are no way to set runtime-conditions like `--dev` unless you create an .env file. See .env.example for an example layout:
 
 ``` bash
 curl -X POST http://127.0.0.1:8000/run \
