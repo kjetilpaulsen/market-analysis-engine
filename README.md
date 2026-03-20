@@ -129,7 +129,7 @@ Assuming you have the data for e.g. `AAPL` available, the following command will
 uv run python -m market_analysis_engine cli display-graph --ticker=AAPL --period=3y
 ```
 The result will be stored in your `XDG_DATA_HOME` folder, e.g. `~/.local/share/market-analysis-engine/AAPL_3y.png`. If using kitty terminal, the output will be displayed directly in your terminal and looks like this:
-![docs/AAPL_3y.png](AAPL_3y.png)
+![AAPL_3y.png](docs/AAPL_3y.png)
 
 Run API:
 
