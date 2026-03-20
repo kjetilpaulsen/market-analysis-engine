@@ -124,6 +124,12 @@ Fetch market data(this will gather an updated list of all tickers on most US exc
 ``` bash
 uv run python -m market_analysis_engine cli --dev updateall
 ```
+Assuming you have the data for e.g. `AAPL` available, the following command will display a graph of the ticker closing values for the given period. It will also overlay a linear regression analysis based on the same period.
+``` bash
+uv run python -m market_analysis_engine cli display-graph --ticker=AAPL --period=3y
+```
+The result will be stored in your `XDG_DATA_HOME` folder, e.g. `~/.local/share/market-analysis-engine/AAPL_3y.png`. If using kitty terminal, the output will be displayed directly in your terminal and looks like this:
+![docs/AAPL_3y.png](AAPL_3y.png)
 
 Run API:
 
