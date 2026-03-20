@@ -1,4 +1,4 @@
-# Project Name
+# market-analysis-engine
 
 This is an old project, but early in March 2026 I started migrating the old code into this repo. I am combining it with my python-project-blueprint repo in order to harden the surrounding infrastructure in the app. As a result not all features have been migrated yet, and the README.md is lacking. My first priority is to get the README.md up and running, which should be by 23 March 2026
 
@@ -19,5 +19,5 @@ A tool that stores financial data in PostgreSQL. Different analysis methods can 
 ### Setup
 ```bash
 git clone https://github.com/kjetilpaulsen/market-analysis-engine.git
-cd project
+cd market-analysis-engine
 ```
