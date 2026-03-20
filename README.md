@@ -1,23 +1,223 @@
 # market-analysis-engine
 
-This is an old project, but early in March 2026 I started migrating the old code into this repo. I am combining it with my python-project-blueprint repo in order to harden the surrounding infrastructure in the app. As a result not all features have been migrated yet, and the README.md is lacking. My first priority is to get the README.md up and running, which should be by 23 March 2026
+## Disclaimer
 
-A tool that stores financial data in PostgreSQL. Different analysis methods can then be used on the data.
+This project is intended for educational and personal use only.
+
+The application retrieves financial data via `yfinance`, which in turn sources data from Yahoo Finance. The authors of this project do not own, control, or guarantee the accuracy, availability, or licensing of this data.
+
+Users are solely responsible for:
+- Ensuring compliance with the terms of service of Yahoo Finance and `yfinance`
+- Verifying the legality of storing, processing, or redistributing any retrieved data
+- Assessing the suitability and correctness of the data for their use case
+
+The authors assume no responsibility or liability for any decisions, financial or otherwise, made based on data obtained through this application.
+
+If you intend to use this system in a production or commercial setting, you should implement your own data provider integration and ensure full compliance with applicable laws and data licensing terms.
+
+### Description
+
+A Python application for collecting, storing and analyzing financial
+market data, built on top of a modular command-driven architecture with
+CLI and API interfaces.
+
+### What this is
+
+This repository is a **concrete implementation** built on top of
+`python-project-blueprint`.
+
+It provides: - A structured system for fetching and storing market data
+(e.g. via yfinance) - A database-backed backend (PostgreSQL) for
+persistent storage - A command-driven architecture for extensibility
+(data ingestion, analysis, retrieval) - A foundation for future
+ML/AI-driven analysis pipelines
+
+## Table of contents:
+
+-   Quick start
+-   Features
+-   Architecture
+-   Installation
+    -   Requirements
+    -   Setup
+    -   Usage
+    -   Testing
+-   Docker & Github Actions
+    -   Local docker usage
+    -   GitHub Actions setup
+
+## Quick Start
+
+``` bash
+git clone https://github.com/kjetilpaulsen/market-analysis-engine.git
+cd market-analysis-engine
+uv sync
+uv run python -m market_analysis_engine cli version
+```
 
 ## Features
-- Two entrypoints, CLI/FastAPI
-- Structured logging
-- XDG folder structure
-- Linear regression analysis
-- Displaying of stock data based on given time period, e.g. "3y"
+
+-   Dual entrypoints: CLI and FastAPI (HTTP API)
+-   Command → Handler → Event pipeline for decoupled execution
+-   Integration with financial data sources (e.g. yfinance)
+-   PostgreSQL-backed persistence layer
+-   Structured runtime configuration (env → config → defaults)
+-   XDG-compliant directory layout
+-   Configurable logging system (file + console)
+-   Typed command/event system for predictable execution
+-   Extensible command system (e.g. fetch data, store data, query data)
+-   Test suite with pytest + coverage
+-   Docker support for API deployment
+-   CI/CD via GitHub Actions
+
+## Architecture
+
+### Architecture
+
+[Architecture](docs/architecture.md)
+
+### Flow
+
+[Flow](docs/flow.md)
 
 ## Installation
 
 ### Requirements
-- Python >= 3.x
+
+-   **Python** ≥ 3.11 (recommended: 3.12--3.14)
+-   **uv**
+-   **PostgreSQL**
 
 ### Setup
-```bash
+
+``` bash
 git clone https://github.com/kjetilpaulsen/market-analysis-engine.git
 cd market-analysis-engine
+uv sync
 ```
+
+Optional:
+
+``` bash
+source .venv/bin/activate
+```
+
+### Usage
+
+Show available commands:
+
+``` bash
+uv run python -m market_analysis_engine cli -h
+```
+
+Example commands (may evolve during development):
+
+Fetch market data(this will gather an updated list of all tickers on most US exchanges, and then start downloading daily values for as far back as possible with maximum date of 1975.01.01. This will create *a lot* of traffic. Instead use the `--dev` flag to just do a test run with 7 preselected tickers):
+
+``` bash
+uv run python -m market_analysis_engine cli --dev updateall
+```
+
+Run API:
+
+``` bash
+uv run python -m market_analysis_engine api
+```
+
+Test API:
+
+``` bash
+curl http://127.0.0.1:8000/health
+```
+
+Run command via API:
+
+``` bash
+curl -X POST http://127.0.0.1:8000/run \
+  -H "Content-Type: application/json" \
+  -d '{
+    "commands": [
+      { "name": "updateall", "options": {} }
+    ]
+  }'
+```
+
+Build config:
+
+``` bash
+uv run python -m market_analysis_engine cli --build-config
+```
+
+### Testing
+
+``` bash
+uv run pytest
+```
+With coverage:
+
+``` bash
+uv run pytest -V --cov=market_analysis_engine --cov-report=term-missing
+```
+
+## Docker & GitHub Actions Setup
+
+### Overview
+
+-   Docker: API container
+-   Docker Compose: local orchestration
+-   GitHub Actions: test → build → push
+
+## Local Docker Usage
+
+### 1. Create `.env`
+
+``` env
+IMAGE_NAME=<your-dockerhub-username>/<your-image-name>
+IMAGE_TAG=latest
+
+LOG_LEVEL=DEBUG
+CONSOLE_LOG=true
+STDERR_LOG=true
+```
+
+### 2. Run
+
+``` bash
+docker compose up --build
+```
+
+Stop:
+
+``` bash
+docker compose down
+```
+
+Test:
+
+``` bash
+curl http://127.0.0.1:8010/health
+```
+
+## GitHub Actions usage
+
+### Setup secrets
+
+```env
+DOCKERHUB_USERNAME=<your-dockerhub-username>
+```
+```env
+DOCKERHUB_TOKEN=<your-dockerhub-access-token>
+```
+```env
+IMAGE_NAME=<your-dockerhub-username>/<your-image-name>
+```
+```env
+IMAGE_TAG_LATEST=<image-name>
+```
+```env
+PREFIX_SHA=<image-name>
+```
+
+On push to `release` branch: - Runs tests - Builds Docker image - Pushes
+to DockerHub
+

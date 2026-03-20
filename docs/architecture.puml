@@ -1,0 +1,97 @@
+@startuml
+left to right direction
+title market-analysis-engine - Intended Architecture
+
+package "Frontends" {
+  [CLI]
+  [FastAPI]
+}
+
+package "Command Layer" {
+  [FrontendCommandInput]
+  [build_commands()]
+  [Command]
+}
+
+package "Core" {
+  [App]
+}
+
+package "Handlers" {
+  [DisplayVersionHandler]
+  [UpdateAllHandler]
+  [DisplayGraphHandler]
+}
+
+package "Runtime / Config" {
+  [build_runtime()]
+  [Runtime]
+  [Paths]
+  [Logging Config]
+  [DB Config]
+  [Ticker Config]
+}
+
+package "Infrastructure Services" {
+  [MarketRepo]
+  [TickerService]
+  [MarketService]
+  [YFClient]
+  [TickerClient]
+  [PostgreSQL]
+}
+
+package "Output" {
+  [Event]
+  [EvtLog]
+  [EvtProgress]
+  [EvtResult]
+  [EvtError]
+}
+
+CLI --> [FrontendCommandInput]
+FastAPI --> [FrontendCommandInput]
+
+[FrontendCommandInput] --> [build_commands()]
+[build_commands()] --> [Command]
+
+CLI --> [build_runtime()]
+FastAPI --> [build_runtime()]
+[build_runtime()] --> [Runtime]
+[Runtime] --> [Paths]
+[Runtime] --> [Logging Config]
+[Runtime] --> [DB Config]
+[Runtime] --> [Ticker Config]
+
+[Command] --> [App]
+[Runtime] --> [App]
+
+[App] --> [DisplayVersionHandler]
+[App] --> [UpdateAllHandler]
+[App] --> [DisplayGraphHandler]
+
+[App] --> [MarketRepo]
+[App] --> [TickerService]
+[App] --> [MarketService]
+
+[TickerService] --> [TickerClient]
+[MarketService] --> [YFClient]
+[MarketRepo] --> [PostgreSQL]
+[TickerService] --> [MarketRepo]
+[DisplayGraphHandler] --> [MarketRepo]
+[UpdateAllHandler] --> [TickerService]
+[UpdateAllHandler] --> [MarketService]
+[UpdateAllHandler] --> [MarketRepo]
+
+[DisplayVersionHandler] --> [Event]
+[UpdateAllHandler] --> [Event]
+[DisplayGraphHandler] --> [Event]
+
+[Event] --> [EvtLog]
+[Event] --> [EvtProgress]
+[Event] --> [EvtResult]
+[Event] --> [EvtError]
+
+[Event] --> CLI
+[Event] --> FastAPI
+@enduml

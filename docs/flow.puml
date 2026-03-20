@@ -1,0 +1,38 @@
+@startuml
+title market-analysis-engine - Intended Execution Flow
+
+actor User
+participant CLI
+participant API
+participant "FrontendCommandInput" as FCI
+participant "build_commands()" as Builder
+participant "build_runtime()" as RuntimeBuilder
+participant App
+participant Handler
+participant "TickerService / MarketService / Repo" as Services
+participant Event
+
+User -> CLI : run command
+User -> API : POST /run
+
+CLI -> FCI : parse CLI args
+API -> FCI : parse request body
+
+FCI -> Builder : normalize input
+CLI -> RuntimeBuilder : resolve runtime
+API -> RuntimeBuilder : resolve/reuse runtime
+
+Builder -> App : executable commands
+RuntimeBuilder -> App : runtime dependencies
+
+App -> Handler : resolve handler per command
+Handler -> Services : execute business logic
+Services --> Handler : data / persistence / fetch results
+
+Handler -> Event : emit log/progress/result/error
+Event --> App : stream events
+App --> CLI : events
+App --> API : events
+CLI --> User : render output
+API --> User : JSON response
+@enduml
