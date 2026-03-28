@@ -26,7 +26,7 @@ CLI and API interfaces.
 > This project is currently being migrated and amalgamated from the python-project-blueprint template and an older iteration of this project.
 > The Docker setup and GitHub actions is not currently working with postgres
 > Not all analysis-methods have been migrated over, currently only linear regression works
-> This project will be continously updated and hardened over the coming weeks and months.
+> This project is being continously updated.
 
 ### What this is
 
